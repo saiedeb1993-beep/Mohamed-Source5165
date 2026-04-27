@@ -188,7 +188,7 @@ namespace COServer.Game.MsgServer
                             //------------------------
                             if (itemuse.ITEM_ID == Database.ItemType.SuperDragonBall
                                 && DataItem.ITEM_ID % 10 == 9
-                                && DataItem.IsEquip)
+                                && Database.ItemType.ItemPosition(DataItem.ITEM_ID) == (ushort)Role.Flags.ConquerItem.Boots)
                             {
                                 if (DataItem.Legendary)
                                 {
@@ -197,6 +197,10 @@ namespace COServer.Game.MsgServer
                                 }
                                 if (Role.Core.PercentSuccess(5))
                                 {
+                                    string itemName = "item";
+                                    Database.ItemType.DBItem legendaryDBItem;
+                                    if (Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out legendaryDBItem))
+                                        itemName = legendaryDBItem.Name;
                                     DataItem.Color = Role.Flags.Color.Orange;
                                     DataItem.Legendary = true;
                                     DataItem.Enchant = (byte)Database.ItemType.MaxEnchant;
@@ -204,9 +208,9 @@ namespace COServer.Game.MsgServer
                                     DataItem.Send(client, stream);
                                     client.SendSysMesage("Congratulations! Your item has become Legendary!", MsgMessage.ChatMode.TopLeftSystem);
                                     Program.SendGlobalPackets.Enqueue(new MsgMessage(
-                                        client.Player.Name + " has forged a Legendary item!",
-                                        MsgMessage.MsgColor.white,
-                                        MsgMessage.ChatMode.System).GetArray(stream));
+                                        client.Player.Name + " has forged a Legendary [" + itemName + "]!",
+                                        MsgMessage.MsgColor.red,
+                                        MsgMessage.ChatMode.Center).GetArray(stream));
                                 }
                                 else
                                 {

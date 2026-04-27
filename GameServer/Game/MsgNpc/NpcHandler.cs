@@ -23294,20 +23294,22 @@ namespace COServer.Game.MsgNpc
             }
             else if (Option == 2)
             {
-                // Legendary upgrade - check for SuperDragonBall and any Super equipment
+                // Legendary upgrade - requires SuperDragonBall + Super Boot in inventory
                 if (!client.Inventory.Contain(Database.ItemType.SuperDragonBall, 1))
                 {
                     Game.MsgNpc.Dialog dialog = new Game.MsgNpc.Dialog(client, stream);
-                    dialog.AddText("You need a SuperDragonBall to upgrade an item to Legendary!")
+                    dialog.AddText("You need a SuperDragonBall to upgrade a Boot to Legendary!")
                         .AddOption("I see.", 0)
                         .FinalizeDialog();
                     return;
                 }
-                // Find any Super equipment in inventory that is not already Legendary
+                // Find a Super Boot in inventory that is not already Legendary
                 Game.MsgServer.MsgGameItem legendaryItem = null;
                 foreach (var item in client.Inventory.ClientItems.Values)
                 {
-                    if (item.ITEM_ID % 10 == 9 && item.IsEquip && !item.Legendary)
+                    if (item.ITEM_ID % 10 == 9 &&
+                        Database.ItemType.ItemPosition(item.ITEM_ID) == (ushort)Role.Flags.ConquerItem.Boots &&
+                        !item.Legendary)
                     {
                         legendaryItem = item;
                         break;
@@ -23316,13 +23318,17 @@ namespace COServer.Game.MsgNpc
                 if (legendaryItem == null)
                 {
                     Game.MsgNpc.Dialog dialog = new Game.MsgNpc.Dialog(client, stream);
-                    dialog.AddText("You need a Super quality item in your inventory (not already Legendary) to upgrade!")
+                    dialog.AddText("You need a Super quality Boot in your inventory (not already Legendary) to upgrade!")
                         .AddOption("I see.", 0)
                         .FinalizeDialog();
                     return;
                 }
                 if (Role.Core.PercentSuccess(5))
                 {
+                    string itemName = "Boot";
+                    Database.ItemType.DBItem legendaryDBItem;
+                    if (Database.Server.ItemsBase.TryGetValue(legendaryItem.ITEM_ID, out legendaryDBItem))
+                        itemName = legendaryDBItem.Name;
                     legendaryItem.Color = Role.Flags.Color.Orange;
                     legendaryItem.Legendary = true;
                     legendaryItem.Enchant = (byte)Database.ItemType.MaxEnchant;
@@ -23331,11 +23337,11 @@ namespace COServer.Game.MsgNpc
                     if (legendaryItem.Position != 0)
                         client.Equipment.QueryEquipment();
                     client.Inventory.Remove(Database.ItemType.SuperDragonBall, 1, stream);
-                    client.SendSysMesage("Congratulations! Your item has become Legendary!", MsgMessage.ChatMode.TopLeftSystem);
+                    client.SendSysMesage("Congratulations! Your Boot has become Legendary!", MsgMessage.ChatMode.TopLeftSystem);
                     Program.SendGlobalPackets.Enqueue(new MsgMessage(
-                        client.Player.Name + " has forged a Legendary item!",
-                        MsgMessage.MsgColor.white,
-                        MsgMessage.ChatMode.System).GetArray(stream));
+                        client.Player.Name + " has forged a Legendary [" + itemName + "]!",
+                        MsgMessage.MsgColor.red,
+                        MsgMessage.ChatMode.Center).GetArray(stream));
                 }
                 else
                 {
