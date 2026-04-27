@@ -73,7 +73,7 @@ namespace COServer.Database
             ClassMoney5 = 723717,
             ClassMoney4 = 723716,
             Stone_1 = 730001,
-            Stone_2 = 730002,
+            SuperDragonBall = 730002,
             Stone_3 = 730003,
             Stone_4 = 730004,
             Stone_5 = 730005,

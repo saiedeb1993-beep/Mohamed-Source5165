@@ -186,13 +186,20 @@ namespace COServer.Game.MsgServer
                             //------------------------
                             //bool worked = true;
                             //------------------------
-                            if (itemuse.ITEM_ID == Database.ItemType.DragonBall
+                            if (itemuse.ITEM_ID == Database.ItemType.SuperDragonBall
                                 && DataItem.ITEM_ID % 10 == 9
-                                && Database.ItemType.ItemPosition(DataItem.ITEM_ID) == (ushort)Role.Flags.ConquerItem.Boots)
+                                && DataItem.IsEquip)
                             {
+                                if (DataItem.Legendary)
+                                {
+                                    client.SendSysMesage("This item is already Legendary!", MsgMessage.ChatMode.TopLeftSystem);
+                                    return;
+                                }
                                 if (Role.Core.PercentSuccess(5))
                                 {
                                     DataItem.Color = Role.Flags.Color.Orange;
+                                    DataItem.Legendary = true;
+                                    DataItem.Enchant = (byte)Database.ItemType.MaxEnchant;
                                     DataItem.Mode = Role.Flags.ItemMode.Update;
                                     DataItem.Send(client, stream);
                                     client.SendSysMesage("Congratulations! Your item has become Legendary!", MsgMessage.ChatMode.TopLeftSystem);
@@ -200,22 +207,27 @@ namespace COServer.Game.MsgServer
                                         client.Player.Name + " has forged a Legendary item!",
                                         MsgMessage.MsgColor.white,
                                         MsgMessage.ChatMode.System).GetArray(stream));
-                                    client.Inventory.Remove(Database.ItemType.DragonBall, 1, stream);
                                 }
                                 else
                                 {
-                                    client.SendSysMesage("The upgrade failed. Better luck next time!", MsgMessage.ChatMode.TopLeftSystem);
-                                    client.Inventory.Remove(Database.ItemType.DragonBall, 1, stream);
+                                    client.SendSysMesage("The upgrade failed. Your SuperDragonBall was consumed!", MsgMessage.ChatMode.TopLeftSystem);
                                 }
+                                client.Inventory.Remove(Database.ItemType.SuperDragonBall, 1, stream);
+                                return;
                             }
                             else if (itemuse.ITEM_ID == Database.ItemType.DragonBall)
                             {
                                 Database.ItemType.DBItem DBItem;
                                 if (Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem))
                                 {
+                                    if (DataItem.Legendary)
+                                    {
+                                        client.SendSysMesage("This item is already Legendary and cannot be upgraded further!");
+                                        return;
+                                    }
                                     if (DataItem.ITEM_ID % 10 == 9)
                                     {
-                                        client.SendSysMesage("This item's can't be upgraded anymore.");
+                                        client.SendSysMesage("This item is Super quality. Use a SuperDragonBall to upgrade it to Legendary!");
                                         return;
                                     }
                                     byte Chance = (byte)(70 - ((DBItem.Level - (DBItem.Level > 100 ? 30 : 0)) / (10 - DataItem.ITEM_ID % 10)));

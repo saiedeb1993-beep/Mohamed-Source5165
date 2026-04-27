@@ -28,7 +28,7 @@ namespace COServer.Game.MsgServer
                 if (position == 0)
                     Plus = 0;
             }
-            if (ITEM_ID >= 730001 && ITEM_ID <= 730008)
+            if (ITEM_ID >= 730001 && ITEM_ID <= 730008 && ITEM_ID != Database.ItemType.SuperDragonBall)
                 Plus = (byte)(ITEM_ID % 10);
 
             client.Send(ItemCreate(stream, this));

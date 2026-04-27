@@ -19659,9 +19659,16 @@ namespace COServer.Game.MsgNpc
                         MsgServer.MsgGameItem item;
                         if (client.Equipment.TryGetEquip((Role.Flags.ConquerItem)Option - 10, out item))
                         {
+                            if (item.Legendary)
+                            {
+                                dialog.AddText("This item is already Legendary! It cannot be upgraded further.")
+                                .AddOption("Oh,~I~see.")
+                                .AddAvatar(63).FinalizeDialog();
+                                break;
+                            }
                             if (item.ITEM_ID % 10 == 9)
                             {
-                                dialog.AddText("Sorry, this item is Super. There is no quality higher than this. It`s perfect!")
+                                dialog.AddText("This item is Super quality. Use a SuperDragonBall to upgrade it to Legendary!")
                                 .AddOption("Oh,~I~see.")
                                 .AddAvatar(63).FinalizeDialog();
                                 break;
@@ -19699,9 +19706,16 @@ namespace COServer.Game.MsgNpc
                         MsgServer.MsgGameItem item;
                         if (client.Equipment.TryGetEquip((Role.Flags.ConquerItem)Option - 20, out item))
                         {
+                            if (item.Legendary)
+                            {
+                                dialog.AddText("This item is already Legendary! It cannot be upgraded further.")
+                                .AddOption("Oh,~I~see.")
+                                .AddAvatar(63).FinalizeDialog();
+                                break;
+                            }
                             if (item.ITEM_ID % 10 == 9)
                             {
-                                dialog.AddText("Sorry, this item is Super. There is no quality higher than this. It`s perfect!")
+                                dialog.AddText("This item is Super quality. Use a SuperDragonBall to upgrade it to Legendary!")
                                 .AddOption("Oh,~I~see.")
                                 .AddAvatar(63).FinalizeDialog();
                                 break;
@@ -23280,8 +23294,8 @@ namespace COServer.Game.MsgNpc
             }
             else if (Option == 2)
             {
-                // Legendary upgrade - check for SuperDragonBall (730002) and Super Boot
-                if (!client.Inventory.Contain(730002, 1))
+                // Legendary upgrade - check for SuperDragonBall and any Super equipment
+                if (!client.Inventory.Contain(Database.ItemType.SuperDragonBall, 1))
                 {
                     Game.MsgNpc.Dialog dialog = new Game.MsgNpc.Dialog(client, stream);
                     dialog.AddText("You need a SuperDragonBall to upgrade an item to Legendary!")
@@ -23289,13 +23303,11 @@ namespace COServer.Game.MsgNpc
                         .FinalizeDialog();
                     return;
                 }
-                // Find Super Boot in inventory
+                // Find any Super equipment in inventory that is not already Legendary
                 Game.MsgServer.MsgGameItem legendaryItem = null;
                 foreach (var item in client.Inventory.ClientItems.Values)
                 {
-                    if (item.ITEM_ID % 10 == 9 &&
-                        Database.ItemType.ItemPosition(item.ITEM_ID) == (ushort)Role.Flags.ConquerItem.Boots &&
-                        item.Enchant != 255)
+                    if (item.ITEM_ID % 10 == 9 && item.IsEquip && !item.Legendary)
                     {
                         legendaryItem = item;
                         break;
@@ -23304,7 +23316,7 @@ namespace COServer.Game.MsgNpc
                 if (legendaryItem == null)
                 {
                     Game.MsgNpc.Dialog dialog = new Game.MsgNpc.Dialog(client, stream);
-                    dialog.AddText("You need a Super quality Boot in your inventory to upgrade to Legendary!")
+                    dialog.AddText("You need a Super quality item in your inventory (not already Legendary) to upgrade!")
                         .AddOption("I see.", 0)
                         .FinalizeDialog();
                     return;
@@ -23312,13 +23324,14 @@ namespace COServer.Game.MsgNpc
                 if (Role.Core.PercentSuccess(5))
                 {
                     legendaryItem.Color = Role.Flags.Color.Orange;
-                    legendaryItem.Enchant = 255;
+                    legendaryItem.Legendary = true;
+                    legendaryItem.Enchant = (byte)Database.ItemType.MaxEnchant;
                     legendaryItem.Mode = Role.Flags.ItemMode.Update;
                     legendaryItem.Send(client, stream);
                     if (legendaryItem.Position != 0)
                         client.Equipment.QueryEquipment();
-                    client.Inventory.Remove(730002, 1, stream);
-                    client.SendSysMesage("Congratulations! Your Boot has become Legendary!", MsgMessage.ChatMode.TopLeftSystem);
+                    client.Inventory.Remove(Database.ItemType.SuperDragonBall, 1, stream);
+                    client.SendSysMesage("Congratulations! Your item has become Legendary!", MsgMessage.ChatMode.TopLeftSystem);
                     Program.SendGlobalPackets.Enqueue(new MsgMessage(
                         client.Player.Name + " has forged a Legendary item!",
                         MsgMessage.MsgColor.white,
@@ -23326,8 +23339,8 @@ namespace COServer.Game.MsgNpc
                 }
                 else
                 {
-                    client.Inventory.Remove(730002, 1, stream);
-                    client.SendSysMesage("The upgrade failed. Better luck next time!", MsgMessage.ChatMode.TopLeftSystem);
+                    client.Inventory.Remove(Database.ItemType.SuperDragonBall, 1, stream);
+                    client.SendSysMesage("The upgrade failed. Your SuperDragonBall was consumed!", MsgMessage.ChatMode.TopLeftSystem);
                 }
             }
         }

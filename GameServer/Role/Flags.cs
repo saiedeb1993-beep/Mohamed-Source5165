@@ -156,6 +156,7 @@ namespace COServer.Role
             Unique = 7,
             Elite = 8,
             Super = 9,
+            Legendary = 10,
             Other = 1
         }
         public enum Color : uint
