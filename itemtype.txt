@@ -7127,7 +7127,7 @@ Amount=7950
 729988 IndigoPowder 0 0 0 0 0 0 0 0 3 0 0 9001700 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 QuestItem Collect~seven~types~of~Powder~to~compose~into~the~Rainbow~Powder~by~right~click. 5
 729989 PurplePowder 0 0 0 0 0 0 0 0 3 0 0 9001700 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 QuestItem Collect~seven~types~of~Powder~to~compose~into~the~Rainbow~Powder~by~right~click. 5
 730001 +1Stone 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 1 0 0 0 0 0 0 1 8 RareItem Composed~as~a~minor~item~in~the~WuXing~Oven~(290,251)~to~give~the~main~item~10~composition~points. 6
-730002 SuperDragonBall 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 2 0 0 0 0 0 0 1 37 RareItem Composed~as~a~minor~item~in~the~WuXing~Oven~(290,251)~to~give~the~main~item~40~composition~points. 7
+730002 SuperDragonBall 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 37 RareItem Use~this~on~a~Super~Boot~to~attempt~upgrading~it~to~Legendary~quality~(5%~chance). 7
 730003 +3Stone 0 0 0 0 0 0 0 0 0 0 5000000 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 3 0 0 0 0 0 0 1 108 RareItem Composed~as~a~minor~item~in~the~WuXing~Oven~(290,251)~to~give~the~main~item~120~composition~points. 8
 730004 +4Stone 0 0 0 0 0 0 0 0 0 0 15000000 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 4 0 0 0 0 0 0 1 324 RareItem Composed~as~a~minor~item~in~the~WuXing~Oven~(290,251)~to~give~the~main~item~360~composition~points. 8
 730005 +5Stone 0 0 0 0 0 0 0 0 0 0 45000000 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 5 0 0 0 0 0 0 1 972 RareItem Composed~as~a~minor~item~in~the~WuXing~Oven~(290,251)~to~give~the~main~item~1080~composition~points. 8
