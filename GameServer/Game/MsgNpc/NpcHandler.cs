@@ -23331,7 +23331,6 @@ namespace COServer.Game.MsgNpc
                         itemName = legendaryDBItem.Name;
                     legendaryItem.Color = Role.Flags.Color.Orange;
                     legendaryItem.Legendary = true;
-                    legendaryItem.Enchant = (byte)Database.ItemType.MaxEnchant;
                     legendaryItem.Mode = Role.Flags.ItemMode.Update;
                     legendaryItem.Send(client, stream);
                     if (legendaryItem.Position != 0)

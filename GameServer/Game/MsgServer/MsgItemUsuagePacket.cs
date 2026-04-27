@@ -203,7 +203,6 @@ namespace COServer.Game.MsgServer
                                         itemName = legendaryDBItem.Name;
                                     DataItem.Color = Role.Flags.Color.Orange;
                                     DataItem.Legendary = true;
-                                    DataItem.Enchant = (byte)Database.ItemType.MaxEnchant;
                                     DataItem.Mode = Role.Flags.ItemMode.Update;
                                     DataItem.Send(client, stream);
                                     client.SendSysMesage("Congratulations! Your item has become Legendary!", MsgMessage.ChatMode.TopLeftSystem);
