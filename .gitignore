@@ -1,0 +1,8 @@
+bin/
+packages/
+packages 1/
+*.rar
+*.user
+*.suo
+.vs/
+obj/
