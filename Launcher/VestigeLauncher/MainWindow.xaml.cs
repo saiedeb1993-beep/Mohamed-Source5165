@@ -22,7 +22,7 @@ namespace VestigeLauncher
 
         // ── Paths (relative to launcher exe location) ────────────────────────────
         private static readonly string BaseDir    = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string GameExe    = Path.Combine(BaseDir, "bin", "Play.exe");
+        private static readonly string GameExe    = Path.Combine(BaseDir, "Play.exe");
         private static readonly string PatchNotes = Path.Combine(BaseDir, "patchnotes.json");
 
         // All config files the game may read — launcher patches all of them
@@ -120,7 +120,7 @@ namespace VestigeLauncher
             }
             else
             {
-                SetStatus("Game not found — place Play.exe in bin\\", 0);
+                SetStatus("Game not found — Play.exe missing from game folder", 0);
                 PlayButton.IsEnabled = false;
             }
         }
@@ -174,7 +174,7 @@ namespace VestigeLauncher
                 Process.Start(new ProcessStartInfo
                 {
                     FileName         = GameExe,
-                    WorkingDirectory = Path.GetDirectoryName(GameExe)
+                    WorkingDirectory = BaseDir  // root folder so game finds data.wdf, map/, ani/ etc.
                 });
 
                 Application.Current.Shutdown();
