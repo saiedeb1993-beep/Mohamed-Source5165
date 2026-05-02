@@ -22,7 +22,7 @@ namespace VestigeLauncher
 
         // ── Paths (relative to launcher exe location) ────────────────────────────
         private static readonly string BaseDir    = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string GameExe    = Path.Combine(BaseDir, "bin", "Conquer.exe");
+        private static readonly string GameExe    = Path.Combine(BaseDir, "Play.exe");
         private static readonly string PatchNotes = Path.Combine(BaseDir, "patchnotes.json");
 
         // All config files the game may read — launcher patches all of them
