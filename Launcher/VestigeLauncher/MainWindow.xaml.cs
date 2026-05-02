@@ -25,11 +25,13 @@ namespace VestigeLauncher
         private static readonly string GameExe    = Path.Combine(BaseDir, "bin", "Conquer.exe");
         private static readonly string PatchNotes = Path.Combine(BaseDir, "patchnotes.json");
 
-        // All locations where config.ini may live — launcher patches all of them
+        // All config files the game may read — launcher patches all of them
         private static readonly string[] ConfigPaths = new[]
         {
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_cfg.ini"),
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"),
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ini", "config.ini"),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin", "_cfg.ini"),
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin", "config.ini"),
         };
 
