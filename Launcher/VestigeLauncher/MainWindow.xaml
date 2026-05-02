@@ -1,0 +1,230 @@
+<Window x:Class="VestigeLauncher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Vestige Launcher"
+        Height="640" Width="900"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        MouseDown="Window_MouseDown">
+
+    <Border Background="#141414" CornerRadius="6" BorderBrush="#2c2c2c" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="160"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="80"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title Bar -->
+            <Grid Grid.Row="0" Background="#0d0d0d">
+                <Border CornerRadius="6,6,0,0" Background="#0d0d0d"/>
+                <TextBlock Text="Vestige Launcher"
+                           Foreground="#606060"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           Margin="14,0"/>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,6,0">
+                    <Button Content="—"
+                            Width="28" Height="28"
+                            Background="Transparent"
+                            Foreground="#707070"
+                            BorderThickness="0"
+                            FontSize="13"
+                            Cursor="Hand"
+                            Click="MinimizeButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="3">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#2a2a2a"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="✕"
+                            Width="28" Height="28"
+                            Background="Transparent"
+                            Foreground="#707070"
+                            BorderThickness="0"
+                            FontSize="11"
+                            Cursor="Hand"
+                            Click="ExitButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="3">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#8b1a1a"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Logo / Header -->
+            <Border Grid.Row="1" Background="#0d0d0d">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="VESTIGE"
+                               FontSize="54"
+                               FontWeight="Bold"
+                               FontFamily="Georgia"
+                               HorizontalAlignment="Center"
+                               Foreground="#c8a840">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#c8a840" BlurRadius="24" Opacity="0.45" ShadowDepth="0"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock Text="Conquer Online Private Server"
+                               FontSize="12"
+                               Foreground="#606060"
+                               HorizontalAlignment="Center"
+                               Margin="0,4,0,0"
+                               FontStyle="Italic"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Patch Notes -->
+            <Border Grid.Row="2" Background="#141414" Margin="0,1,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              Padding="20,10,20,10">
+                    <StackPanel x:Name="PatchNotesPanel"/>
+                </ScrollViewer>
+            </Border>
+
+            <!-- Bottom Bar -->
+            <Border Grid.Row="3" Background="#0d0d0d" CornerRadius="0,0,6,6">
+                <Grid Margin="18,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Status + Progress -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                        <TextBlock x:Name="StatusText"
+                                   Text="ready to play"
+                                   Foreground="#909090"
+                                   FontSize="12"
+                                   Margin="0,0,0,6"/>
+                        <ProgressBar x:Name="ProgressBar"
+                                     Height="22"
+                                     Value="100"
+                                     Background="#1e1e1e"
+                                     BorderBrush="#333333"
+                                     BorderThickness="1">
+                            <ProgressBar.Foreground>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#c8a840" Offset="0"/>
+                                    <GradientStop Color="#e8c860" Offset="1"/>
+                                </LinearGradientBrush>
+                            </ProgressBar.Foreground>
+                        </ProgressBar>
+                    </StackPanel>
+
+                    <!-- PLAY Button -->
+                    <Button x:Name="PlayButton"
+                            Grid.Column="1"
+                            Content="PLAY"
+                            FontWeight="Bold"
+                            FontSize="16"
+                            Height="50"
+                            Margin="6,0"
+                            Cursor="Hand"
+                            Click="PlayButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Foreground" Value="#1a1a1a"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Bd" Background="#c8a840" CornerRadius="3">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#ddb840"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#b09030"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#555555"/>
+                                                    <Setter Property="Foreground" Value="#888888"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- EXIT Button -->
+                    <Button Grid.Column="2"
+                            Content="EXIT"
+                            FontWeight="Bold"
+                            FontSize="16"
+                            Height="50"
+                            Margin="6,0"
+                            Cursor="Hand"
+                            Click="ExitButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Foreground" Value="#cccccc"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Bd" Background="#1e3a6e" CornerRadius="3">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#2a4e8e"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#162b50"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>
