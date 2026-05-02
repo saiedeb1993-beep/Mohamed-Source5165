@@ -1,0 +1,10 @@
+{
+  "servers": [
+    {
+      "name": "Vestige",
+      "ip": "25.2.56.134",
+      "accPort": 9958,
+      "gamePort": 5816
+    }
+  ]
+}
