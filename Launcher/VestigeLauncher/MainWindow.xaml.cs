@@ -21,15 +21,17 @@ namespace VestigeLauncher
         private const int    GamePort   = 5816;   // Game server port
 
         // ── Paths (relative to launcher exe location) ────────────────────────────
-        // Folder layout expected:
-        //   VestigeLauncher.exe    ← launcher
-        //   bin\Conquer.exe        ← game executable
-        //   ini\config.ini         ← game config (launcher patches IP/port here)
-        //   patchnotes.json
-        private static readonly string BaseDir     = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string GameExe     = Path.Combine(BaseDir, "bin", "Conquer.exe");
-        private static readonly string ConfigIni   = Path.Combine(BaseDir, "ini", "config.ini");
-        private static readonly string PatchNotes  = Path.Combine(BaseDir, "patchnotes.json");
+        private static readonly string BaseDir    = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly string GameExe    = Path.Combine(BaseDir, "bin", "Conquer.exe");
+        private static readonly string PatchNotes = Path.Combine(BaseDir, "patchnotes.json");
+
+        // All locations where config.ini may live — launcher patches all of them
+        private static readonly string[] ConfigPaths = new[]
+        {
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ini", "config.ini"),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin", "config.ini"),
+        };
 
         public MainWindow()
         {
@@ -136,26 +138,27 @@ namespace VestigeLauncher
 
         private void PatchConfig()
         {
-            if (!File.Exists(ConfigIni)) return;
-
-            var lines = File.ReadAllLines(ConfigIni);
-            for (int i = 0; i < lines.Length; i++)
+            foreach (var path in ConfigPaths)
             {
-                string trimmed = lines[i].TrimStart();
+                if (!File.Exists(path)) continue;
 
-                if (trimmed.StartsWith("IP=", StringComparison.OrdinalIgnoreCase) ||
-                    trimmed.StartsWith("ServerIP=", StringComparison.OrdinalIgnoreCase))
+                var lines = File.ReadAllLines(path);
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    lines[i] = "IP=" + ServerIP;
+                    string trimmed = lines[i].TrimStart();
+                    if (trimmed.StartsWith("IP=", StringComparison.OrdinalIgnoreCase) ||
+                        trimmed.StartsWith("ServerIP=", StringComparison.OrdinalIgnoreCase))
+                    {
+                        lines[i] = "IP=" + ServerIP;
+                    }
+                    else if (trimmed.StartsWith("Port=", StringComparison.OrdinalIgnoreCase) ||
+                             trimmed.StartsWith("ServerPort=", StringComparison.OrdinalIgnoreCase))
+                    {
+                        lines[i] = "Port=" + AccPort;
+                    }
                 }
-                else if (trimmed.StartsWith("Port=", StringComparison.OrdinalIgnoreCase) ||
-                         trimmed.StartsWith("ServerPort=", StringComparison.OrdinalIgnoreCase))
-                {
-                    lines[i] = "Port=" + AccPort;
-                }
+                File.WriteAllLines(path, lines, Encoding.UTF8);
             }
-
-            File.WriteAllLines(ConfigIni, lines, Encoding.UTF8);
         }
 
         // ── Button Handlers ──────────────────────────────────────────────────────
