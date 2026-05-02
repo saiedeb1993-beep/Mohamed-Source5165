@@ -167,22 +167,38 @@ namespace VestigeLauncher
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!File.Exists(GameExe))
+            {
+                MessageBox.Show(
+                    "Conquer.exe not found at:\n" + GameExe + "\n\nMake sure Conquer.exe is inside the bin\\ folder.",
+                    "Vestige Launcher",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
                 PatchConfig();
 
-                Process.Start(new ProcessStartInfo
+                var proc = Process.Start(new ProcessStartInfo
                 {
                     FileName         = GameExe,
-                    WorkingDirectory = BaseDir  // root so Conquer.exe finds data.wdf, map/, ani/ etc.
+                    WorkingDirectory = BaseDir
                 });
+
+                if (proc == null)
+                {
+                    MessageBox.Show("Failed to start Conquer.exe — process returned null.", "Vestige Launcher", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
                 Application.Current.Shutdown();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Failed to launch game:\n" + ex.Message,
+                    "Failed to launch game:\n\n" + ex.Message + "\n\nPath: " + GameExe,
                     "Vestige Launcher",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
