@@ -165,15 +165,13 @@ namespace VestigeLauncher
 
         // ── Button Handlers ──────────────────────────────────────────────────────
 
-        private void PlayButton_Click(object sender, RoutedEventArgs e)
+        private async void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             if (!File.Exists(GameExe))
             {
                 MessageBox.Show(
-                    "Conquer.exe not found at:\n" + GameExe + "\n\nMake sure Conquer.exe is inside the bin\\ folder.",
-                    "Vestige Launcher",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                    "Conquer.exe not found at:\n" + GameExe,
+                    "Vestige Launcher", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -181,27 +179,56 @@ namespace VestigeLauncher
             {
                 PatchConfig();
 
-                var proc = Process.Start(new ProcessStartInfo
+                // Add bin\ to PATH so Conquer.exe finds DLLs even with root as working dir
+                string binDir = Path.Combine(BaseDir, "bin");
+                string existingPath = Environment.GetEnvironmentVariable("PATH") ?? "";
+
+                var startInfo = new ProcessStartInfo
                 {
                     FileName         = GameExe,
-                    WorkingDirectory = BaseDir
-                });
+                    WorkingDirectory = BaseDir,
+                    UseShellExecute  = false
+                };
+                startInfo.EnvironmentVariables["PATH"] = binDir + ";" + existingPath;
+
+                SetStatus("Starting game...", 100);
+                PlayButton.IsEnabled = false;
+
+                var proc = Process.Start(startInfo);
 
                 if (proc == null)
                 {
-                    MessageBox.Show("Failed to start Conquer.exe — process returned null.", "Vestige Launcher", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Process returned null — try running launcher as Administrator.",
+                        "Vestige Launcher", MessageBoxButton.OK, MessageBoxImage.Error);
+                    PlayButton.IsEnabled = true;
+                    SetStatus("ready to play", 100);
                     return;
                 }
 
-                Application.Current.Shutdown();
+                // Wait 3 seconds and check if game is still running
+                await Task.Delay(3000);
+
+                if (proc.HasExited)
+                {
+                    MessageBox.Show(
+                        "Conquer.exe closed immediately.\nExit code: " + proc.ExitCode +
+                        "\n\nMake sure all DLL files are inside bin\\ folder alongside Conquer.exe.",
+                        "Vestige Launcher", MessageBoxButton.OK, MessageBoxImage.Error);
+                    PlayButton.IsEnabled = true;
+                    SetStatus("ready to play", 100);
+                }
+                else
+                {
+                    Application.Current.Shutdown();
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Failed to launch game:\n\n" + ex.Message + "\n\nPath: " + GameExe,
-                    "Vestige Launcher",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                    "Failed to launch:\n\n" + ex.Message + "\n\nPath: " + GameExe,
+                    "Vestige Launcher", MessageBoxButton.OK, MessageBoxImage.Error);
+                PlayButton.IsEnabled = true;
+                SetStatus("ready to play", 100);
             }
         }
 
