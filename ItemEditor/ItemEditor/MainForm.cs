@@ -60,7 +60,7 @@ namespace ItemEditor
             catch (Exception ex)
             {
                 MessageBox.Show("Failed to load file:\n" + ex.Message, "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -276,12 +276,5 @@ namespace ItemEditor
             _dirty = true;
         }
 
-        // ── Helpers ──────────────────────────────────────────────────────────────
-
-        private static MessageBoxButtons MessageBoxButton =>
-            MessageBoxButtons.OK;
-
-        private static MessageBoxIcon MessageBoxImage =>
-            MessageBoxIcon.Error;
     }
 }
