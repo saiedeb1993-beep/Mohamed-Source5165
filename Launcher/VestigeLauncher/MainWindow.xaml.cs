@@ -21,15 +21,19 @@ namespace VestigeLauncher
         private const int    GamePort   = 5816;   // Game server port
 
         // ── Paths (relative to launcher exe location) ────────────────────────────
-        // Folder layout expected:
-        //   VestigeLauncher.exe    ← launcher
-        //   bin\Conquer.exe        ← game executable
-        //   ini\config.ini         ← game config (launcher patches IP/port here)
-        //   patchnotes.json
-        private static readonly string BaseDir     = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string GameExe     = Path.Combine(BaseDir, "bin", "Conquer.exe");
-        private static readonly string ConfigIni   = Path.Combine(BaseDir, "ini", "config.ini");
-        private static readonly string PatchNotes  = Path.Combine(BaseDir, "patchnotes.json");
+        private static readonly string BaseDir    = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly string GameExe    = Path.Combine(BaseDir, "Play.exe");
+        private static readonly string PatchNotes = Path.Combine(BaseDir, "patchnotes.json");
+
+        // All config files the game may read — launcher patches all of them
+        private static readonly string[] ConfigPaths = new[]
+        {
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_cfg.ini"),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini"),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ini", "config.ini"),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin", "_cfg.ini"),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin", "config.ini"),
+        };
 
         public MainWindow()
         {
@@ -116,7 +120,7 @@ namespace VestigeLauncher
             }
             else
             {
-                SetStatus($"Game not found — place Conquer.exe in: bin\\", 0);
+                SetStatus("Game not found — place Conquer.exe in bin\\", 0);
                 PlayButton.IsEnabled = false;
             }
         }
@@ -136,51 +140,95 @@ namespace VestigeLauncher
 
         private void PatchConfig()
         {
-            if (!File.Exists(ConfigIni)) return;
-
-            var lines = File.ReadAllLines(ConfigIni);
-            for (int i = 0; i < lines.Length; i++)
+            foreach (var path in ConfigPaths)
             {
-                string trimmed = lines[i].TrimStart();
+                if (!File.Exists(path)) continue;
 
-                if (trimmed.StartsWith("IP=", StringComparison.OrdinalIgnoreCase) ||
-                    trimmed.StartsWith("ServerIP=", StringComparison.OrdinalIgnoreCase))
+                var lines = File.ReadAllLines(path);
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    lines[i] = "IP=" + ServerIP;
+                    string trimmed = lines[i].TrimStart();
+                    if (trimmed.StartsWith("IP=", StringComparison.OrdinalIgnoreCase) ||
+                        trimmed.StartsWith("ServerIP=", StringComparison.OrdinalIgnoreCase))
+                    {
+                        lines[i] = "IP=" + ServerIP;
+                    }
+                    else if (trimmed.StartsWith("Port=", StringComparison.OrdinalIgnoreCase) ||
+                             trimmed.StartsWith("ServerPort=", StringComparison.OrdinalIgnoreCase))
+                    {
+                        lines[i] = "Port=" + AccPort;
+                    }
                 }
-                else if (trimmed.StartsWith("Port=", StringComparison.OrdinalIgnoreCase) ||
-                         trimmed.StartsWith("ServerPort=", StringComparison.OrdinalIgnoreCase))
-                {
-                    lines[i] = "Port=" + AccPort;
-                }
+                File.WriteAllLines(path, lines, Encoding.UTF8);
             }
-
-            File.WriteAllLines(ConfigIni, lines, Encoding.UTF8);
         }
 
         // ── Button Handlers ──────────────────────────────────────────────────────
 
-        private void PlayButton_Click(object sender, RoutedEventArgs e)
+        private async void PlayButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!File.Exists(GameExe))
+            {
+                MessageBox.Show(
+                    "Conquer.exe not found at:\n" + GameExe,
+                    "Vestige Launcher", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
                 PatchConfig();
 
-                Process.Start(new ProcessStartInfo
+                // Add bin\ to PATH so Conquer.exe finds DLLs even with root as working dir
+                string binDir = Path.Combine(BaseDir, "bin");
+                string existingPath = Environment.GetEnvironmentVariable("PATH") ?? "";
+
+                var startInfo = new ProcessStartInfo
                 {
                     FileName         = GameExe,
-                    WorkingDirectory = Path.GetDirectoryName(GameExe)
-                });
+                    WorkingDirectory = BaseDir,
+                    UseShellExecute  = false
+                };
+                startInfo.EnvironmentVariables["PATH"] = binDir + ";" + existingPath;
 
-                Application.Current.Shutdown();
+                SetStatus("Starting game...", 100);
+                PlayButton.IsEnabled = false;
+
+                var proc = Process.Start(startInfo);
+
+                if (proc == null)
+                {
+                    MessageBox.Show("Process returned null — try running launcher as Administrator.",
+                        "Vestige Launcher", MessageBoxButton.OK, MessageBoxImage.Error);
+                    PlayButton.IsEnabled = true;
+                    SetStatus("ready to play", 100);
+                    return;
+                }
+
+                // Wait 3 seconds and check if game is still running
+                await Task.Delay(3000);
+
+                if (proc.HasExited)
+                {
+                    MessageBox.Show(
+                        "Conquer.exe closed immediately.\nExit code: " + proc.ExitCode +
+                        "\n\nMake sure all DLL files are inside bin\\ folder alongside Conquer.exe.",
+                        "Vestige Launcher", MessageBoxButton.OK, MessageBoxImage.Error);
+                    PlayButton.IsEnabled = true;
+                    SetStatus("ready to play", 100);
+                }
+                else
+                {
+                    Application.Current.Shutdown();
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Failed to launch game:\n" + ex.Message,
-                    "Vestige Launcher",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                    "Failed to launch:\n\n" + ex.Message + "\n\nPath: " + GameExe,
+                    "Vestige Launcher", MessageBoxButton.OK, MessageBoxImage.Error);
+                PlayButton.IsEnabled = true;
+                SetStatus("ready to play", 100);
             }
         }
 
