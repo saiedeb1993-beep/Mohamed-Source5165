@@ -68,12 +68,16 @@ namespace COServer.Game.MsgServer
 
 
                         if (ItemsUIDS.Count == 0)
+                        {
+                            Console.WriteLine("[DEBUG] UpdateLevel: ItemsUIDS is EMPTY");
                             break;
+                        }
 
                         MsgGameItem DataItem;
                         if (client.TryGetItem(ItemUID, out DataItem))
                         {
                             ushort Position = Database.ItemType.ItemPosition(DataItem.ITEM_ID);
+                            Console.WriteLine("[DEBUG] UpdateLevel: ItemUID=" + ItemUID + " DataItem.ITEM_ID=" + DataItem.ITEM_ID + " Position=" + Position + " ItemsUIDS.Count=" + ItemsUIDS.Count + " ItemsUIDS[0]=" + ItemsUIDS[0]);
                             //anti proxy --------------------
                             if (!Database.ItemType.AllowToUpdate((Role.Flags.ConquerItem)Position))
                             {
@@ -84,6 +88,7 @@ namespace COServer.Game.MsgServer
                             MsgGameItem itemuse;
                             if (client.Inventory.ClientItems.TryGetValue(ItemsUIDS[0], out itemuse))
                             {
+                                Console.WriteLine("[DEBUG] UpdateLevel: itemuse.ITEM_ID=" + itemuse.ITEM_ID);
                                 if (itemuse.ITEM_ID == Database.ItemType.DragonBall)
                                 {
                                     Database.ItemType.DBItem DBItem;
