@@ -381,5 +381,183 @@ Requires ProjectManager or owner access.
   lv     Labyrinth (8800/1354)
 
 ============================================================
+  SECTION 7: EFFECT STRING IDs (used with /effect or /addeffect)
+============================================================
+
+These are the effect name strings found in the source code.
+Use them with:  /effect [name]  or  /addeffect [name]
+
+  Effect Name              Where Used
+  ----------------------   -----------------------------------------------
+  900x100                  Item usage - unknown visual
+  EquipBroken              When equipped item breaks during combat
+  Health                   NPC handler - health restore effect
+  LuckyGuy                 Critical hit / lucky critical on attack
+  SuperXp-4                CityWar animation (commented out but present)
+  _p_19_daboluo110         Server special effect
+  accession                Item usage - ascension/drop effect
+  accession1               Monster kill reward / TreasureThief event
+  accession3               Monster spawn area effect (boss area)
+  bless                    Player bless effect (level up / heaven blessing)
+  bombarrow                GuildWar gate arrow bomb effect
+  break_accept             Monster action - item break accept effect
+  change                   Monster action - change/transform effect
+  colorstar                Monster action - colored star effect
+  eddy                     Item usage - whirlpool/vortex effect
+  eidolon                  Item usage - eidolon/summon effect
+  energy                   NPC handler - energy refill effect
+  fam_exp_special          Monster action - family exp effect
+  fastflash                NPC handler - fast flash effect
+  fire1                    Monster kill - fire burst effect
+  firemagic                GuildWar gate - fire magic effect
+  firework-1love           Item usage - love firework (1 heart)
+  firework-2love           Item usage / attack - love firework (2 hearts)
+  firework-like            Item usage - like firework
+  glebesword               Monster action - glebe sword effect
+  lottery                  LuckyBox event (in code, currently commented out)
+  moveback                 Movement effect - move back
+  movego                   Movement effect - move go
+  relive1                  Item usage - revive/relive effect
+  ssch_wlhd_hit            Special attack hit effect
+  tj                       Bomb skill hit effect
+  xp                       XP activation effect
+  zf2-e027                 Item usage - map area effect at fixed coords
+  zf2-e104                 Item usage - portal/zone effect
+  zf2-e121                 Special zone effect
+  zf2-e263                 Bomb skill - location effect (LocationEffect type)
+  zf2-e264                 Bomb skill level 1 effect
+  zf2-e265                 Bomb skill level 2 effect
+  zf2-e266                 Bomb skill level 3 effect
+  zf2-e267                 Bomb skill level 4 effect
+  zf2-e290                 Monster kill special effect
+
+NOTE: /effect plays the effect on your character (player-attached).
+      /effectfloor [itemID] plays a floor-placed visual.
+      /addeffect [name] sends the raw string effect packet.
+      /string_effect [name] is an alias for addeffect.
+
+============================================================
+  SECTION 8: PROFICIENCY IDs (WeaponsType enum)
+============================================================
+
+Used with:  /prof [ID] [level] [exp]
+            /clearprof  (removes all)
+            /clearspells (removes all spells, not profs)
+
+  ID     Weapon Type
+  ----   ----------------------
+  0      Boxing
+  410    Blade
+  420    Sword
+  421    Backsword
+  422    Other
+  430    Hook
+  440    Whip
+  441    Mace
+  450    Axe
+  460    Hammer
+  470    Crutch
+  480    Club
+  481    Scepter
+  490    Dagger
+  491    Prod
+  492    Fan
+  493    Flute
+  500    Bow
+  510    Glaive
+  511    Scythe
+  520    Epee
+  521    Zither
+  522    Lute
+  530    Poleaxe
+  540    LongHammer
+  560    Spear
+  561    Wand
+  562    Pickaxe
+  570    Spade
+  580    Halbert
+  601    NinjaSword
+  610    PrayerBeads
+  611    Rapier
+  612    Pistol
+  614    CrossSaber
+  616    TwistedClaw
+  617    Nunchaku
+  624    Fist
+  626    WindFan
+  721    MagicSword
+  900    Shield
+  1050   ArcherBow
+
+Proficiency max level = 20
+Level EXP thresholds (Level -> EXP needed):
+  0  ->        0
+  1  ->    1,200
+  2  ->   68,000
+  3  ->  250,000
+  4  ->  640,000
+  5  ->1,600,000
+  6  ->4,000,000
+  7  ->10,000,000
+  8  ->22,000,000
+  9  ->40,000,000
+  10 ->90,000,000
+  11 ->95,000,000
+  12 ->142,500,000
+  13 ->213,750,000
+  14 ->320,625,000
+  15 ->480,937,500
+  16 ->721,406,250
+  17 ->1,082,109,375
+  18 ->1,623,164,063
+  19 ->2,100,000,000
+  20 -> 0 (MAX)
+
+============================================================
+  SECTION 9: GUILD WAR - HOW IT WORKS
+============================================================
+
+THERE IS NO /guildwar on or /guildwar off COMMAND.
+
+Guild War is fully automatic. It is controlled by the server
+scheduler (MsgSchedules.cs), not by a chat command.
+
+--- Automatic Schedule ---
+
+  Day:    Every SUNDAY
+  Start:  14:00 (2 PM server time)
+  End:    17:00 (5 PM server time)
+  Invite: 09:00 (9 AM) - invitation sent to all players
+
+--- What the scheduler does ---
+
+  Hour 9            -> Broadcasts GuildWar invitation to all players
+                       (map: GuildCastle 1038, coords 200,254)
+  Hour 14 to 17     -> GuildWar.Start() is called
+                       Then GuildWar.Began() fires each round
+                       GuildWar.ShuffleGuildScores() updates scores
+  Hour 17, Minute 0 -> GuildWar.CompleteEndGuildWar() is called
+
+--- GM Commands related to Guild War ---
+
+  /invitegw         Manually broadcast the GuildWar invitation
+                    to all players right now (same as the 9 AM auto-invite)
+
+  /invitegw2        Send the GuildWar invite popup to YOURSELF only
+                    (for testing the invitation message box)
+
+  /eliteguildwar on     Start Elite Guild War (separate from regular GW)
+  /eliteguildwar off    Stop Elite Guild War
+
+--- GuildWar Gate Effects (automatic during GuildWar) ---
+
+  firemagic    - Played on gate furniture during GuildWar
+  bombarrow    - Played on gate furniture during GuildWar
+
+To manually force Guild War timing you would need to change the
+server schedule in MsgSchedules.cs (lines 377-420) or call
+GuildWar.Start() / GuildWar.CompleteEndGuildWar() from code.
+
+============================================================
 END OF COMMAND LIST
 ============================================================
