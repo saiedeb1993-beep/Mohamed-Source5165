@@ -718,6 +718,7 @@ namespace COServer.Game.MsgNpc
         Level67EliteHeadgearPack = uint.MaxValue - 46,
         L60UniqueGearPack = uint.MaxValue - 47,
         VIPBook = uint.MaxValue - 48,
-        ArtisanMind = 9999
+        ArtisanMind = 9999,
+        MeteorScrollUpgrader = 870055
     }
 }

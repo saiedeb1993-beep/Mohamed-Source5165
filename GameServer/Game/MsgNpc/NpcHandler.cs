@@ -23266,6 +23266,33 @@ namespace COServer.Game.MsgNpc
         }
 
 
+        #region MeteorScrollUpgrader - VIP MeteorScroll window NPC (ID 870055)
+        [NpcAttribute(NpcID.MeteorScrollUpgrader)]
+        public static unsafe void MeteorScrollUpgrader(Client.GameClient client, ServerSockets.Packet stream, byte Option, string Input, uint id)
+        {
+            if (client.Player.VipLevel < 1)
+            {
+                Game.MsgNpc.Dialog dialog = new Game.MsgNpc.Dialog(client, stream);
+                dialog.AddText("Sorry, this upgrade service is for VIP players only.")
+                    .AddOption("I see.", 0)
+                    .FinalizeDialog();
+                return;
+            }
+            // Open the upgrade window directly — no menu
+            ActionQuery action = new ActionQuery()
+            {
+                ObjId = client.Player.UID,
+                dwParam = (uint)Role.Flags.NpcType.Upgrader,
+                Type = ActionType.OpenGuiNpc,
+                Timestamp = (int)client.ActiveNpc,
+                wParam1 = client.Player.X,
+                wParam2 = client.Player.Y,
+                dwParam3 = client.Player.Map
+            };
+            client.Send(stream.ActionCreate(&action));
+        }
+        #endregion
+
         #region ArtisanMind - Item Upgrade NPC
         [NpcAttribute(NpcID.ArtisanMind)]
         public static unsafe void ArtisanMind(Client.GameClient client, ServerSockets.Packet stream, byte Option, string Input, uint id)
@@ -23276,34 +23303,10 @@ namespace COServer.Game.MsgNpc
                 dialog.AddText("Welcome! What would you like to do?")
                     .AddOption("Upgrade item quality/level.", 1)
                     .AddOption("Upgrade item to Legendary (needs SuperDragonBall).", 2)
-                    .AddOption("[VIP] Use MeteorScroll (equals 10 meteors at once).", 3)
                     .FinalizeDialog();
             }
             else if (Option == 1)
             {
-                ActionQuery action = new ActionQuery()
-                {
-                    ObjId = client.Player.UID,
-                    dwParam = (uint)Role.Flags.NpcType.Upgrader,
-                    Type = ActionType.OpenGuiNpc,
-                    Timestamp = (int)client.ActiveNpc,
-                    wParam1 = client.Player.X,
-                    wParam2 = client.Player.Y,
-                    dwParam3 = client.Player.Map
-                };
-                client.Send(stream.ActionCreate(&action));
-            }
-            else if (Option == 3)
-            {
-                if (client.Player.VipLevel < 1)
-                {
-                    Game.MsgNpc.Dialog dialog = new Game.MsgNpc.Dialog(client, stream);
-                    dialog.AddText("Sorry, the MeteorScroll upgrade service is for VIP players only.")
-                        .AddOption("I see.", 0)
-                        .FinalizeDialog();
-                    return;
-                }
-                // Open the upgrade GUI — player drags item + MeteorScroll into the window
                 ActionQuery action = new ActionQuery()
                 {
                     ObjId = client.Player.UID,

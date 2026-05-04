@@ -116,7 +116,7 @@ namespace COServer.Game.MsgServer
                                         }
                                     }
                                 }
-                                else if (itemuse.ITEM_ID == Database.ItemType.Meteor || itemuse.ITEM_ID == Database.ItemType.MeteorScroll)
+                                else if (itemuse.ITEM_ID == Database.ItemType.Meteor)
                                 {
                                     if (client.Inventory.CheckMeteors((byte)ItemsUIDS.Count, false, stream))
                                     {
@@ -149,6 +149,59 @@ namespace COServer.Game.MsgServer
 
                                                 client.Inventory.CheckMeteors((byte)ItemsUIDS.Count, true, stream);
                                             }
+                                        }
+                                    }
+                                }
+                                else if (itemuse.ITEM_ID == Database.ItemType.MeteorScroll)
+                                {
+                                    // VIP only — MeteorScroll = 10 meteor upgrade attempts at once
+                                    if (client.Player.VipLevel < 1)
+                                    {
+                                        client.SendSysMesage("Only VIP players can use MeteorScroll for upgrades!", MsgMessage.ChatMode.TopLeftSystem);
+                                        return;
+                                    }
+                                    if (!client.Inventory.Contain(Database.ItemType.MeteorScroll, 1))
+                                        return;
+
+                                    Database.ItemType.DBItem DBItem;
+                                    if (Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem))
+                                    {
+                                        bool succesed = false;
+                                        uint nextItemId = Database.Server.ItemsBase.UpdateItem(DataItem.ITEM_ID, out succesed);
+
+                                        if ((DBItem.Level >= 70 && Database.ItemType.Equipable(nextItemId, client) == false)
+                                         && (Database.ItemType.ItemPosition(DataItem.ITEM_ID) == (ushort)Role.Flags.ConquerItem.RightWeapon
+                                         || Database.ItemType.ItemPosition(DataItem.ITEM_ID) == (ushort)Role.Flags.ConquerItem.LeftWeapon))
+                                        {
+                                            client.CreateBoxDialog("You can`t upgrade this item.");
+                                        }
+                                        else
+                                        {
+                                            int successCount = 0;
+                                            // Apply 10 meteor upgrade attempts
+                                            for (int i = 0; i < 10; i++)
+                                            {
+                                                if (!Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem))
+                                                    break;
+                                                if (DBItem.Level >= 115)
+                                                    break;
+                                                if (Database.ItemType.UpItemMeteors(DataItem.ITEM_ID, 1))
+                                                {
+                                                    DataItem.ITEM_ID = Database.Server.ItemsBase.UpdateItem(DataItem.ITEM_ID, out succesed);
+                                                    successCount++;
+                                                }
+                                            }
+                                            dwParam1 = (uint)(successCount > 0 ? 1 : 2);
+                                            DataItem.Mode = Role.Flags.ItemMode.Update;
+                                            DataItem.Send(client, stream);
+                                            client.Inventory.Remove(Database.ItemType.MeteorScroll, 1, stream);
+
+                                            Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem);
+                                            string itemName = DBItem != null ? DBItem.Name : "item";
+                                            if (successCount > 0)
+                                                client.SendSysMesage("MeteorScroll: your " + itemName + " was upgraded " + successCount + " time(s)!", MsgMessage.ChatMode.TopLeftSystem);
+                                            else
+                                                client.SendSysMesage("MeteorScroll: all 10 attempts failed on your " + itemName + ".", MsgMessage.ChatMode.TopLeftSystem);
                                         }
                                     }
                                 }
