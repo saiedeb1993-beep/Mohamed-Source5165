@@ -68,16 +68,12 @@ namespace COServer.Game.MsgServer
 
 
                         if (ItemsUIDS.Count == 0)
-                        {
-                            Console.WriteLine("[DEBUG] UpdateLevel: ItemsUIDS is EMPTY");
                             break;
-                        }
 
                         MsgGameItem DataItem;
                         if (client.TryGetItem(ItemUID, out DataItem))
                         {
                             ushort Position = Database.ItemType.ItemPosition(DataItem.ITEM_ID);
-                            Console.WriteLine("[DEBUG] UpdateLevel: ItemUID=" + ItemUID + " DataItem.ITEM_ID=" + DataItem.ITEM_ID + " Position=" + Position + " ItemsUIDS.Count=" + ItemsUIDS.Count + " ItemsUIDS[0]=" + ItemsUIDS[0]);
                             //anti proxy --------------------
                             if (!Database.ItemType.AllowToUpdate((Role.Flags.ConquerItem)Position))
                             {
@@ -88,7 +84,6 @@ namespace COServer.Game.MsgServer
                             MsgGameItem itemuse;
                             if (client.Inventory.ClientItems.TryGetValue(ItemsUIDS[0], out itemuse))
                             {
-                                Console.WriteLine("[DEBUG] UpdateLevel: itemuse.ITEM_ID=" + itemuse.ITEM_ID);
                                 if (itemuse.ITEM_ID == Database.ItemType.DragonBall)
                                 {
                                     Database.ItemType.DBItem DBItem;
@@ -165,8 +160,6 @@ namespace COServer.Game.MsgServer
                                         client.SendSysMesage("Only VIP players can use MeteorScroll for upgrades!", MsgMessage.ChatMode.TopLeftSystem);
                                         return;
                                     }
-                                    if (!client.Inventory.Contain(Database.ItemType.MeteorScroll, 1))
-                                        return;
 
                                     Database.ItemType.DBItem DBItem;
                                     if (Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem))
@@ -183,7 +176,6 @@ namespace COServer.Game.MsgServer
                                         else
                                         {
                                             int successCount = 0;
-                                            // Apply 10 meteor upgrade attempts
                                             for (int i = 0; i < 10; i++)
                                             {
                                                 if (!Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem))
@@ -199,7 +191,8 @@ namespace COServer.Game.MsgServer
                                             dwParam1 = (uint)(successCount > 0 ? 1 : 2);
                                             DataItem.Mode = Role.Flags.ItemMode.Update;
                                             DataItem.Send(client, stream);
-                                            client.Inventory.Remove(Database.ItemType.MeteorScroll, 1, stream);
+                                            // Remove scroll directly using its reference — bypasses Contain/StackSize issues
+                                            client.Inventory.Update(itemuse, Role.Instance.AddMode.REMOVE, stream);
 
                                             Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem);
                                             string itemName = DBItem != null ? DBItem.Name : "item";
