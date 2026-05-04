@@ -379,6 +379,91 @@ namespace COServer.Game.MsgServer
                                 //if (worked)
                                 //    client.Send(stream.ItemUsageCreate(MsgItemUsuagePacket.ItemUsuageID.UpgradeMeteor, ItemUID, dwParam, 0, 0, 0, 0));
                             }
+                            else if (itemuse.ITEM_ID == Database.ItemType.MeteorScroll)
+                            {
+                                // VIP-only: MeteorScroll = 10 meteor upgrade attempts at once
+                                if (client.Player.VipLevel < 1)
+                                {
+                                    client.SendSysMesage("Only VIP players can use MeteorScroll for upgrades. Talk to ArtisanMind!", MsgMessage.ChatMode.TopLeftSystem);
+                                    return;
+                                }
+
+                                Database.ItemType.DBItem DBItem;
+                                if (!Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem))
+                                    return;
+
+                                if (DBItem.Level >= 115)
+                                {
+                                    client.SendSysMesage("The " + DBItem.Name + " can't improve anymore.", MsgMessage.ChatMode.System);
+                                    return;
+                                }
+
+                                if (!client.Inventory.Contain(Database.ItemType.MeteorScroll, 1))
+                                    return;
+
+                                int successCount = 0;
+                                for (int meteori = 0; meteori < 10; meteori++)
+                                {
+                                    // Recalculate chance after each upgrade since level/quality may change
+                                    if (!Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem))
+                                        break;
+
+                                    if (DBItem.Level >= 115)
+                                        break;
+
+                                    byte Chance = 70;
+                                    Chance -= (byte)(DBItem.Level / 10 * 3);
+                                    Chance -= (byte)(((DataItem.ITEM_ID % 10) + 1) * 3);
+
+                                    if (Chance == 0)
+                                        break;
+
+                                    if (Role.Core.PercentSuccess(Chance))
+                                    {
+                                        bool succesed = false;
+                                        DataItem.ITEM_ID = Database.Server.ItemsBase.UpdateItem(DataItem.ITEM_ID, out succesed);
+                                        if (DataItem.SocketOne == Role.Flags.Gem.NoSocket)
+                                        {
+                                            if (Role.Core.PercentSuccess(0.00 + (client.Player.BlessTime > 0 ? Global.LUCKY_TIME_BONUS_SOCKET_RATE : 1)))
+                                            {
+                                                DataItem.SocketOne = Role.Flags.Gem.EmptySocket;
+                                                Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem);
+                                                Program.SendGlobalPackets.Enqueue(new Game.MsgServer.MsgMessage("As a very lucky player, " + client.Player.Name + " has added the first socket to his/her " + DBItem.Name + "", Game.MsgServer.MsgMessage.MsgColor.white, Game.MsgServer.MsgMessage.ChatMode.System).GetArray(stream));
+                                            }
+                                        }
+                                        if (DataItem.SocketOne != Role.Flags.Gem.NoSocket && DataItem.SocketTwo == Role.Flags.Gem.NoSocket)
+                                        {
+                                            if (Role.Core.PercentSuccess(0.00 + (client.Player.BlessTime > 0 ? Global.LUCKY_TIME_BONUS_SOCKET_RATE : 1)))
+                                            {
+                                                DataItem.SocketTwo = Role.Flags.Gem.EmptySocket;
+                                                Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem);
+                                                Program.SendGlobalPackets.Enqueue(new Game.MsgServer.MsgMessage("As a very lucky player, " + client.Player.Name + " has added the second socket to his/her " + DBItem.Name + "", Game.MsgServer.MsgMessage.MsgColor.white, Game.MsgServer.MsgMessage.ChatMode.System).GetArray(stream));
+                                            }
+                                        }
+                                        DataItem.Durability = DataItem.MaximDurability;
+                                        successCount++;
+                                    }
+                                    else
+                                    {
+                                        int RandomDura = Role.Core.Random.Next(0, DataItem.Durability > 0 ? DataItem.Durability : 1);
+                                        DataItem.Durability = (ushort)RandomDura;
+                                    }
+                                }
+
+                                DataItem.Mode = Role.Flags.ItemMode.Update;
+                                DataItem.Send(client, stream);
+                                client.Inventory.Remove(Database.ItemType.MeteorScroll, 1, stream);
+
+                                Database.Server.ItemsBase.TryGetValue(DataItem.ITEM_ID, out DBItem);
+                                string finalName = DBItem != null ? DBItem.Name : "item";
+                                if (successCount > 0)
+                                    client.SendSysMesage("MeteorScroll used! Your " + finalName + " was upgraded " + successCount + " time(s)!", MsgMessage.ChatMode.TopLeftSystem);
+                                else
+                                    client.SendSysMesage("MeteorScroll used but all 10 attempts failed on your " + finalName + "!", MsgMessage.ChatMode.TopLeftSystem);
+
+                                if (DataItem.Position != 0)
+                                    client.Equipment.QueryEquipment();
+                            }
                         }
                         break;
                     }
