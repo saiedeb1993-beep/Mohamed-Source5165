@@ -1,0 +1,563 @@
+============================================================
+       FULL COMMAND LIST - GameServer (MsgMessage.cs)
+============================================================
+
+All commands are typed in-game chat starting with /
+
+============================================================
+  SECTION 1: ALL PLAYERS (No special rank required)
+============================================================
+
+/leave              - Leave the arena map (refunds CPs if betting)
+/resetscores        - Reset your kill scores (hits, chains, etc.)
+/stuck              - Teleport back to Twin City if stuck
+/dc                 - Disconnect from the server
+/queroir            - Join the MataMata event
+/pvp                - Join the PVP event
+
+============================================================
+  SECTION 2: VIP4+ COMMANDS
+============================================================
+
+/pvp                - Join PVP event
+/trash              - Toggle auto-drop gold and trash items
+/skipore            - Toggle skip bad ores while mining
+/clear              - Clear your inventory
+/clearinventory     - Clear your inventory (alias of /clear)
+/scroll tc          - Teleport to Twin City
+/scroll pc          - Teleport to Phoenix City
+/scroll ac          - Teleport to Ape City
+/scroll am          - Teleport to Ape Mountain
+/scroll dc          - Teleport to Desert City
+/scroll bi          - Teleport to Bird Island
+/scroll pka         - Teleport to PK Arena
+/scroll ma          - Teleport to Market
+/scroll ja          - Teleport to Jail
+/scroll lv          - Teleport to Labyrinth
+/agi [amount]       - Spend attribute points on Agility
+/str [amount]       - Spend attribute points on Strength
+/vit [amount]       - Spend attribute points on Vitality
+/spi [amount]       - Spend attribute points on Spirit
+/reallot            - Reset all attributes (costs 1 DragonBall)
+/vipinfo            - Show VIP level and expiry time
+/leave              - Leave arena map
+/resetscores        - Reset kill scores
+/stuck              - Unstuck teleport to Twin City
+/dc                 - Disconnect
+/commands           - Show VIP command list in chat
+/queroir            - Join MataMata event
+
+============================================================
+  SECTION 3: PLAYER HELPER COMMANDS
+============================================================
+
+/ph                 - Show welcome message
+/trace [name]       - Teleport to a player's location
+
+============================================================
+  SECTION 4: GM / PROJECT MANAGER COMMANDS
+============================================================
+
+Requires ProjectManager or owner access.
+
+------------------------------------------------------------
+ 4A. EFFECT COMMANDS
+------------------------------------------------------------
+
+/effect [name]              - Play a map effect at your location
+/addtop [name]              - Add a status effect (10 seconds)
+/remtop [name]              - Remove a status effect
+/addeffect [name]           - Send string effect packet to client
+/string_effect [name]       - Send effect string
+/string_effect2 [x] [y] [effect]
+                            - Play effect at specific map coordinates
+/string_effect3 [stringID] [x] [y]
+                            - Send string packet effect at position
+/effectfloor [itemID]       - Spawn a floor visual effect
+/floor [itemID]             - Drop a floor item effect at your location
+/floor2                     - Spawn AuroraLotus floor effect
+/ef [num]                   - Set movement effect number
+/eat [num]                  - Send eat/consume effect packet
+/activetrap                 - Activate a trap effect
+/sound                      - Play wind.wav sound
+/sound2                     - Play fc2.wav sound
+
+------------------------------------------------------------
+ 4B. EVENT COMMANDS
+------------------------------------------------------------
+
+/start fivenot              - Start FiveNout event
+/start lastman              - Start LastMan Standing event
+/start topgender            - Start Gender War event
+/pole_phoenix on            - Start Phoenix Pole Domination
+/pole_phoenix off           - Stop Phoenix Pole Domination
+/pole_desert on             - Start Desert Pole Domination
+/pole_desert off            - Stop Desert Pole Domination
+/pole_bird on               - Start Bird Pole Domination
+/pole_bird off              - Stop Bird Pole Domination
+/pole_ape on                - Start Ape Pole Domination
+/pole_ape off               - Stop Ape Pole Domination
+/extremeflag on             - Start Extreme Flag War
+/extremeflag off            - Stop Extreme Flag War
+/eliteguildwar on           - Start Elite Guild War
+/eliteguildwar off          - Stop Elite Guild War
+/pvp                        - Join PVP event
+/event 2                    - Start FreezeWar event
+/event 3                    - Start Guilds DeathMatch event
+/event 4                    - Start DeathMatch event
+/event 5                    - Start Kill The Captain event
+/event 6                    - Start Kill The Hunted event
+/tour [typeID]              - Open a specific tournament by type ID
+/dis                        - Open DisCity tournament
+/couplespk                  - Open Couples PK War
+/pkwar                      - Open PK War
+/beginmatamata              - Begin MataMata match
+/startmatamata              - Start MataMata event
+/moveall                    - Move all players (MataMata use)
+/invitegw                   - Broadcast GuildWar invitation to all players
+/invitegw2                  - Send GuildWar invitation (message box to yourself)
+
+------------------------------------------------------------
+ 4C. BOSS / MONSTER SPAWN COMMANDS
+------------------------------------------------------------
+
+/boss1                      - Spawn Snow Banshee boss (map 1015)
+/aa                         - Spawn Dragon boss (Dragon Island map 1787)
+/gb                         - Spawn GuildBeast in GuildCastle (map 1038)
+/gbr                        - Kill GuildBeast (gives DragonBall to guild leader)
+/spm [mobID]                - Spawn a monster at your current position
+/addspawns [mobID] [amount] [radius] [freq]
+                            - Add a permanent monster spawn point (saves to Spawns.txt)
+/testmoob [mobID] [x] [y] [type]
+                            - Test-spawn a monster if not already on map
+/flame                      - Spawn flame creature (mob ID 4145) at your location
+
+------------------------------------------------------------
+ 4D. PLAYER MANAGEMENT COMMANDS
+------------------------------------------------------------
+
+/give [name] spell [ID] [level]
+                            - Give a spell to a player
+/give [name] level [amount] - Give levels to a player
+/give [name] money [amount] - Give gold to a player
+/give [name] cps [amount]   - Give ConquerPoints to a player
+/give [name] reborns [amount]
+                            - Set a player's reborn count
+/give [name] item [ID] [plus] [bless] [enchant] [sock1] [sock2] [count] [effect]
+                            - Give an item to a player
+/ban [name] [hours]         - Ban a player's account
+/banip [name] [hours]       - Ban a player's IP address
+/unbanstr [name]            - Remove ban by player name
+/unbanuid [uid]             - Remove ban by player UID
+/kick [name]                - Kick a player from the server
+/info [name]                - Show player info (UID, IP, CPs, Money, Map, X, Y, BP)
+/irate [name]               - Teleport yourself to a player's location
+/mover [name]               - Move a player to your current location
+/vip [name] [level]         - Set a player's VIP level (adds 30 days)
+
+------------------------------------------------------------
+ 4E. ITEM COMMANDS
+------------------------------------------------------------
+
+/item [ID] [plus] [bless] [enchant] [sock1] [sock2] [count] [effect]
+                            - Add item to your inventory with full params
+/item2 [ID]                 - Add basic item to inventory (no plus/gems)
+/itemm [ID]                 - Add stackable item (10 count)
+/itemtime [ID] [plus] [bless] [enchant] [sock1] [sock2] [count] [effect] [days]
+                            - Add a timed (expiring) item
+/itemstack [ID] [plus] [count]
+                            - Add stacked item to inventory
+/addguiitem [ID] [count]    - Add item via returned item GUI
+/additemstack [ID] [count]  - Add stacked item to inventory
+/remitemstack [ID] [count]  - Remove stacked item from inventory
+/itemeffect [effectID]      - Set visual effect on equipped right weapon
+/dura [slot] [value]        - Set durability on an equipped item
+/steedu [type] [color] [grade] [quality]
+                            - Add a steed/mount to inventory
+
+------------------------------------------------------------
+ 4F. CHARACTER STATS COMMANDS
+------------------------------------------------------------
+
+/level [amount]             - Set your character's level
+/incexp [amount]            - Increase experience by amount
+/exp [amount]               - Update experience display
+/expball [multiplier]       - Gain experience balls
+/money [amount]             - Set your gold amount
+/cps [amount]               - Set your ConquerPoints
+/bcps [amount]              - Set bound ConquerPoints
+/boundcps [amount]          - Set bound ConquerPoints (alias)
+/hp [amount]                - Set HP value
+/hps [amount]               - Set HP and send HP update
+/hit [amount]               - Set HP value (alias)
+/ggb [hp] [maxhp]           - Set HP and max HP
+/life                       - Restore full HP and Mana
+/hvb [days]                 - Set Heaven Blessing days
+/pkp [amount]               - Set PK Points
+/onlinepoints [amount]      - Set online points
+/ops [amount]               - Set online points (alias)
+/reborn [amount]            - Set reborn count
+/class [id]                 - Set character class
+/xp                         - Give XP bar flag (20 seconds)
+/superman                   - Add 500 to all stats (Str/Agi/Spi/Vit)
+/newsuper                   - Set attack to near-maximum values
+/max_attack [value]         - Set min and max attack values
+/max_magic [value]          - Set magic attack and percent values
+/resetstats                 - Reset all stats to 0
+
+------------------------------------------------------------
+ 4G. ATTRIBUTE POINT COMMANDS
+------------------------------------------------------------
+
+/str [amount]               - Spend attribute points on Strength
+/vit [amount]               - Spend attribute points on Vitality
+/agi [amount]               - Spend attribute points on Agility
+/spi [amount]               - Spend attribute points on Spirit
+/reallot                    - Reset all attributes (free for GM, no DB cost)
+
+------------------------------------------------------------
+ 4H. TELEPORT COMMANDS
+------------------------------------------------------------
+
+/tele [mapID] [x] [y] [dynamicID]
+                            - Teleport to any map/coordinate
+/teleback                   - Trigger teleport callback
+/scroll [city]              - Teleport to named city (tc/pc/ac/dc/bi/ma/ja/lv/pka)
+/matamata                   - Teleport to MataMata map (1601)
+/stuck                      - Teleport to Twin City if stuck
+
+------------------------------------------------------------
+ 4I. SPELL / PROFICIENCY COMMANDS
+------------------------------------------------------------
+
+/spell [ID] [level] [levelHu] [exp]
+                            - Add a spell to your character
+/remspell [ID]              - Remove a spell by ID
+/clearspells                - Remove all spells
+/prof [ID] [level] [exp]    - Add a weapon proficiency
+/clearprof                  - Remove all proficiencies
+/learnspells                - Learn every spell (max level) from DB
+
+------------------------------------------------------------
+ 4J. FLAG / STATUS COMMANDS
+------------------------------------------------------------
+
+/addflag [flagID]           - Add a status flag to your character
+/remflag [flagID]           - Remove a status flag
+/flags                      - Clear all status flags
+/invisible                  - Go invisible to other players
+/visible                    - Become visible again
+
+------------------------------------------------------------
+ 4K. VISUAL / APPEARANCE COMMANDS
+------------------------------------------------------------
+
+/hair [style]               - Set hair sub-style number
+/haire [full]               - Set full raw hair value
+/trans [duration]           - Apply transformation
+/visualeffects              - Toggle gem visual effects display
+
+------------------------------------------------------------
+ 4L. SERVER / UTILITY COMMANDS
+------------------------------------------------------------
+
+/bc [message]               - Broadcast message to ALL players (red, center)
+/sinfo                      - Show server info (uptime, players, threads, RAM)
+/map                        - Show your current map ID
+/bp                         - Show your BattlePower
+/realbp                     - Show your Real BattlePower
+/stats                      - Show server drop stats (CPs, ExpBalls, Super items)
+/rev  or  /revive           - Revive yourself
+/dc                         - Disconnect from the server
+/dcinter                    - Force disconnect
+/clear  or  /clearinventory - Clear your inventory
+/trash                      - Toggle auto-drop gold/trash items
+/skipore                    - Toggle skip bad ores while mining
+/allieschat                 - Toggle sending messages to ally guilds
+/resetscores                - Reset hit/chain scores
+/leave                      - Leave arena/event map
+/stuck                      - Unstuck teleport
+/exit                       - SHUTDOWN the server process
+/lotteryreset               - Reset your lottery entry count
+/npcsload                   - Reload all NPCs from file
+/loadpackets                - Load DB packets from file
+/sendpackets                - Send loaded packets to client
+/reward                     - Trigger test reward
+
+------------------------------------------------------------
+ 4M. NPC / MAP COMMANDS
+------------------------------------------------------------
+
+/addnpc [type] [mesh]       - Spawn an NPC at your current location
+/sob [mesh]                 - Spawn a SobNpc pole at your location
+/staticrole                 - Place a static role at your position
+/mapstat [flag]             - Set map status flag (bitflag)
+/searchguard                - Show spawn location of mob at your tile
+/bodynpcs [value]           - Set body value for nearby NPC movement
+
+------------------------------------------------------------
+ 4N. GUILD DEBUG COMMANDS
+------------------------------------------------------------
+
+/addmem [count]             - Add fake online members to your guild (for testing)
+/addmem2 [count]            - Add fake offline members to your guild
+/ali [action]               - Send a guild action request packet
+
+------------------------------------------------------------
+ 4O. DEBUG / TEST COMMANDS
+------------------------------------------------------------
+
+/test                       - Loop update packets (types 30-200, debug only)
+/testpacket                 - Send a test class-PK-war packet
+/testsinglepacket           - Send a nobility ranking test packet
+/testmoob [mobID] [x] [y] [type]
+                            - Spawn a test monster on the map
+/testupd                    - Loop MsgUpdate data types for testing
+/test11                     - Show a center message (exp ball test)
+/fftest [x1] [y1] [x2] [y2]
+                            - Send dual-target spell test packets
+/ftest                      - Floor spell test at your position
+/atest                      - Empty test placeholder
+/asd                        - Loop test flag 171 updates
+/ada [start] [end]          - Loop attack interact types in range
+/jjj [param1] [param2] [packetID]
+                            - Send a raw custom packet
+/dd                         - Send action packet test (type 0xAB)
+/gh                         - Send game health UI packets
+/data [dialogID]            - Open dialog action (OpenDialog)
+/data1 [dialogID]           - Open dialog action (OpenCustom)
+/w [id]                     - Open dialog action (OpenDialog alias)
+/d [id]                     - Dialog action
+/c [id]                     - Open custom dialog action
+/addgui [id]                - Open GUI dialog
+/cards [value]              - Send poker draw cards packet
+/tgui [id]                  - Open dialog by ID
+/quiz [actionID]            - Show quiz show popup
+/interact [type] [damage]   - Send interaction packet to nearby players
+/attacknormal [type]        - Attack nearest monster with attack type
+/estats                     - Open Elite PK stats UI
+/pick                       - Add a mining pick to inventory
+/do [n] [command]           - Repeat a command n times
+/presentflag                - Print cell flag at your current position
+
+------------------------------------------------------------
+ 4P. MISC GM COMMANDS
+------------------------------------------------------------
+
+/chr                        - Test Heaven Demon kill message + credit counter
+/semper                     - Display welcome message
+/rr                         - Reset TC Captain Times counter
+/facke [count]              - Spawn fake player bots (visual only)
+/tessst                     - Test item garment packet
+/lotteryreset               - Reset lottery entries to 0
+/statue                     - Create a player statue at your position
+
+============================================================
+  SECTION 5: COMMAND PERMISSION LEVELS (SUMMARY)
+============================================================
+
+  Level           Trigger Condition
+  -----------     -----------------------------------------
+  All Players     Everyone (VipLevel = 0 or any)
+  VIP4+           client.Player.VipLevel >= 4
+  Player Helper   client.PlayerHelper == true
+  GM / PM         client.ProjectManager == true
+
+============================================================
+  SECTION 6: SCROLL CITY CODES
+============================================================
+
+  Code   Destination
+  ----   -------------------
+  tc     Twin City (1002)
+  pc     Phoenix City (1011)
+  ac     Ape City (1020)
+  am     Ape Mountain (1020)
+  dc     Desert City (1000)
+  bi     Bird Island (1015)
+  pka    PK Arena (1005)
+  ma     Market (1036)
+  ja     Jail (6000)
+  lv     Labyrinth (8800/1354)
+
+============================================================
+  SECTION 7: EFFECT STRING IDs (used with /effect or /addeffect)
+============================================================
+
+These are the effect name strings found in the source code.
+Use them with:  /effect [name]  or  /addeffect [name]
+
+  Effect Name              Where Used
+  ----------------------   -----------------------------------------------
+  900x100                  Item usage - unknown visual
+  EquipBroken              When equipped item breaks during combat
+  Health                   NPC handler - health restore effect
+  LuckyGuy                 Critical hit / lucky critical on attack
+  SuperXp-4                CityWar animation (commented out but present)
+  _p_19_daboluo110         Server special effect
+  accession                Item usage - ascension/drop effect
+  accession1               Monster kill reward / TreasureThief event
+  accession3               Monster spawn area effect (boss area)
+  bless                    Player bless effect (level up / heaven blessing)
+  bombarrow                GuildWar gate arrow bomb effect
+  break_accept             Monster action - item break accept effect
+  change                   Monster action - change/transform effect
+  colorstar                Monster action - colored star effect
+  eddy                     Item usage - whirlpool/vortex effect
+  eidolon                  Item usage - eidolon/summon effect
+  energy                   NPC handler - energy refill effect
+  fam_exp_special          Monster action - family exp effect
+  fastflash                NPC handler - fast flash effect
+  fire1                    Monster kill - fire burst effect
+  firemagic                GuildWar gate - fire magic effect
+  firework-1love           Item usage - love firework (1 heart)
+  firework-2love           Item usage / attack - love firework (2 hearts)
+  firework-like            Item usage - like firework
+  glebesword               Monster action - glebe sword effect
+  lottery                  LuckyBox event (in code, currently commented out)
+  moveback                 Movement effect - move back
+  movego                   Movement effect - move go
+  relive1                  Item usage - revive/relive effect
+  ssch_wlhd_hit            Special attack hit effect
+  tj                       Bomb skill hit effect
+  xp                       XP activation effect
+  zf2-e027                 Item usage - map area effect at fixed coords
+  zf2-e104                 Item usage - portal/zone effect
+  zf2-e121                 Special zone effect
+  zf2-e263                 Bomb skill - location effect (LocationEffect type)
+  zf2-e264                 Bomb skill level 1 effect
+  zf2-e265                 Bomb skill level 2 effect
+  zf2-e266                 Bomb skill level 3 effect
+  zf2-e267                 Bomb skill level 4 effect
+  zf2-e290                 Monster kill special effect
+
+NOTE: /effect plays the effect on your character (player-attached).
+      /effectfloor [itemID] plays a floor-placed visual.
+      /addeffect [name] sends the raw string effect packet.
+      /string_effect [name] is an alias for addeffect.
+
+============================================================
+  SECTION 8: PROFICIENCY IDs (WeaponsType enum)
+============================================================
+
+Used with:  /prof [ID] [level] [exp]
+            /clearprof  (removes all)
+            /clearspells (removes all spells, not profs)
+
+  ID     Weapon Type
+  ----   ----------------------
+  0      Boxing
+  410    Blade
+  420    Sword
+  421    Backsword
+  422    Other
+  430    Hook
+  440    Whip
+  441    Mace
+  450    Axe
+  460    Hammer
+  470    Crutch
+  480    Club
+  481    Scepter
+  490    Dagger
+  491    Prod
+  492    Fan
+  493    Flute
+  500    Bow
+  510    Glaive
+  511    Scythe
+  520    Epee
+  521    Zither
+  522    Lute
+  530    Poleaxe
+  540    LongHammer
+  560    Spear
+  561    Wand
+  562    Pickaxe
+  570    Spade
+  580    Halbert
+  601    NinjaSword
+  610    PrayerBeads
+  611    Rapier
+  612    Pistol
+  614    CrossSaber
+  616    TwistedClaw
+  617    Nunchaku
+  624    Fist
+  626    WindFan
+  721    MagicSword
+  900    Shield
+  1050   ArcherBow
+
+Proficiency max level = 20
+Level EXP thresholds (Level -> EXP needed):
+  0  ->        0
+  1  ->    1,200
+  2  ->   68,000
+  3  ->  250,000
+  4  ->  640,000
+  5  ->1,600,000
+  6  ->4,000,000
+  7  ->10,000,000
+  8  ->22,000,000
+  9  ->40,000,000
+  10 ->90,000,000
+  11 ->95,000,000
+  12 ->142,500,000
+  13 ->213,750,000
+  14 ->320,625,000
+  15 ->480,937,500
+  16 ->721,406,250
+  17 ->1,082,109,375
+  18 ->1,623,164,063
+  19 ->2,100,000,000
+  20 -> 0 (MAX)
+
+============================================================
+  SECTION 9: GUILD WAR - HOW IT WORKS
+============================================================
+
+THERE IS NO /guildwar on or /guildwar off COMMAND.
+
+Guild War is fully automatic. It is controlled by the server
+scheduler (MsgSchedules.cs), not by a chat command.
+
+--- Automatic Schedule ---
+
+  Day:    Every SUNDAY
+  Start:  14:00 (2 PM server time)
+  End:    17:00 (5 PM server time)
+  Invite: 09:00 (9 AM) - invitation sent to all players
+
+--- What the scheduler does ---
+
+  Hour 9            -> Broadcasts GuildWar invitation to all players
+                       (map: GuildCastle 1038, coords 200,254)
+  Hour 14 to 17     -> GuildWar.Start() is called
+                       Then GuildWar.Began() fires each round
+                       GuildWar.ShuffleGuildScores() updates scores
+  Hour 17, Minute 0 -> GuildWar.CompleteEndGuildWar() is called
+
+--- GM Commands related to Guild War ---
+
+  /invitegw         Manually broadcast the GuildWar invitation
+                    to all players right now (same as the 9 AM auto-invite)
+
+  /invitegw2        Send the GuildWar invite popup to YOURSELF only
+                    (for testing the invitation message box)
+
+  /eliteguildwar on     Start Elite Guild War (separate from regular GW)
+  /eliteguildwar off    Stop Elite Guild War
+
+--- GuildWar Gate Effects (automatic during GuildWar) ---
+
+  firemagic    - Played on gate furniture during GuildWar
+  bombarrow    - Played on gate furniture during GuildWar
+
+To manually force Guild War timing you would need to change the
+server schedule in MsgSchedules.cs (lines 377-420) or call
+GuildWar.Start() / GuildWar.CompleteEndGuildWar() from code.
+
+============================================================
+END OF COMMAND LIST
+============================================================
